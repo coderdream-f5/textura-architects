@@ -611,6 +611,117 @@
     .footer-socials a:hover { color: var(--accent); }
 
     /* =============================================
+       1. ПРОГРЕСС-БАР СКРОЛЛА
+       Тонкая золотая линия вверху страницы
+    ============================================= */
+    #scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 9999;
+      transition: width 0.1s linear;
+    }
+
+    /* =============================================
+       2. ПЛАВАЮЩАЯ КНОПКА (FAB)
+       Фиксированная в правом нижнем углу
+    ============================================= */
+    .fab {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 200;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(201,169,110,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .fab:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 28px rgba(201,169,110,0.5);
+    }
+    /* Иконка карандаша внутри кнопки */
+    .fab svg { width: 20px; height: 20px; fill: var(--bg); }
+
+    /* =============================================
+       3. АКТИВНЫЙ ПУНКТ МЕНЮ
+    ============================================= */
+    .nav-links a.active { color: var(--text); }
+    .nav-links a.active::after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 1px;
+      background: var(--accent);
+      margin-top: 2px;
+    }
+
+    /* =============================================
+       4. HOVER-ЭФФЕКТ НА КАРТОЧКАХ ПОРТФОЛИО
+       Тёмный оверлей с кнопкой "Смотреть проект"
+    ============================================= */
+    .portfolio-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(14,14,14,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+    .portfolio-overlay-btn {
+      border: 1px solid var(--text);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 12px 28px;
+      background: transparent;
+      transform: translateY(8px);
+      transition: transform 0.35s ease, background 0.2s, color 0.2s;
+      pointer-events: none;
+    }
+    .portfolio-item:hover .portfolio-overlay-btn {
+      transform: translateY(0);
+    }
+
+    /* =============================================
+       5. АНИМАЦИЯ ЦИФР — стили для счётчиков
+       (логика в JS)
+    ============================================= */
+    .stat-number { display: block; }
+
+    /* =============================================
+       6. HERO — тёмный градиент + параллакс
+    ============================================= */
+    /* Градиент поверх фото — глубина и читаемость */
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(14,14,14,0.75) 0%,
+        rgba(14,14,14,0.3) 60%,
+        rgba(14,14,14,0.55) 100%
+      );
+    }
+    /* Фото чуть ярче — контраст даёт градиент */
+    .hero-bg { opacity: 0.55; }
+
+    /* =============================================
        АНИМАЦИЯ ПРИ СКРОЛЛЕ
        Элементы с классом .fade-in появляются при прокрутке
     ============================================= */
@@ -662,6 +773,16 @@
 </head>
 
 <body>
+
+  <!-- Прогресс-бар скролла (вверху страницы) -->
+  <div id="scroll-progress"></div>
+
+  <!-- Плавающая кнопка — открывает попап с формой заявки -->
+  <button class="fab" onclick="openPopup()" title="Оставить заявку">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+    </svg>
+  </button>
 
   <!-- =============================================
        ВСПЛЫВАЮЩЕЕ ОКНО С ФОРМОЙ ЗАЯВКИ
@@ -754,15 +875,15 @@
         <!-- Цифры — ЗАМЕНИ на свои -->
         <div class="hero-stats">
           <div>
-            <span class="stat-number">50+</span>
+            <span class="stat-number" data-count="50" data-suffix="+">50+</span>
             <span class="stat-label" data-i18n="stat_projects"></span>
           </div>
           <div>
-            <span class="stat-number">3200</span>
+            <span class="stat-number" data-count="3200" data-suffix="">3200</span>
             <span class="stat-label" data-i18n="stat_sqm"></span>
           </div>
           <div>
-            <span class="stat-number">5</span>
+            <span class="stat-number" data-count="5" data-suffix="">5</span>
             <span class="stat-label" data-i18n="stat_years"></span>
           </div>
         </div>
@@ -1097,6 +1218,9 @@
         // Попап
         popup_title: 'Оставить заявку',
         popup_sub:   'Оставьте контакт — мы перезвоним и ответим на все вопросы.',
+
+        // Портфолио — кнопка на карточке
+        portfolio_view: 'Смотреть проект',
       },
 
       // =============================================
@@ -1171,6 +1295,7 @@
 
         popup_title: 'Zapytaj o projekt',
         popup_sub:   'Zostaw kontakt — oddzwonimy i odpowiemy na wszystkie pytania.',
+        portfolio_view: 'Zobacz projekt',
       },
 
       // =============================================
@@ -1245,6 +1370,7 @@
 
         popup_title: 'Request a consultation',
         popup_sub:   'Leave your contact — we\'ll call back and answer any questions.',
+        portfolio_view: 'View project',
       }
     }; // конец translations
 
@@ -1375,6 +1501,9 @@
               alt="${p.title.ru}"
               onerror="this.style.cssText='background:#1e1e1e;display:block;width:100%;height:100%';this.removeAttribute('src')"
             />
+            <div class="portfolio-overlay">
+              <span class="portfolio-overlay-btn" data-i18n="portfolio_view"></span>
+            </div>
             <div class="portfolio-info">
               <span>${p.style[currentLang] || p.style.ru}</span>
               <h3>${p.title[currentLang] || p.title.ru}</h3>
@@ -1382,6 +1511,12 @@
           </a>`;
       }).join('');
       grid.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+      // Применяем текущий язык к новым элементам оверлея
+      const t = translations[currentLang];
+      grid.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) el.textContent = t[key];
+      });
     }
 
     // Применяет переводы и перерисовывает портфолио
@@ -1474,8 +1609,8 @@
     //      Найди "id" внутри "chat" — это CHAT_ID
     //   4. Вставь значения в BOT_TOKEN и CHAT_ID ниже
     // =============================================
-    const BOT_TOKEN = '8204722018:AAHetftLFwyHkYTMCCyKf-IyduN3KEb3gHs';   // ← заменить
-    const CHAT_ID   = '-5158719328'; // ← заменить
+    const BOT_TOKEN = '';   // ← вставь токен бота
+    const CHAT_ID   = '';   // ← вставь chat id
 
     async function sendToTelegram(text) {
       if (BOT_TOKEN.includes('ВСТАВЬ')) {
@@ -1522,6 +1657,90 @@
       e.target.reset();
       setTimeout(() => { success.style.display = 'none'; }, 5000);
     }
+
+    // =============================================
+    // ПРОГРЕСС-БАР СКРОЛЛА
+    // =============================================
+    function updateScrollProgress() {
+      const scrollTop  = window.scrollY;
+      const docHeight  = document.documentElement.scrollHeight - window.innerHeight;
+      const pct        = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      document.getElementById('scroll-progress').style.width = pct + '%';
+    }
+    window.addEventListener('scroll', updateScrollProgress, { passive: true });
+
+
+    // =============================================
+    // АКТИВНЫЙ ПУНКТ МЕНЮ при скролле
+    // Подсвечивает ссылку соответствующую текущей секции
+    // =============================================
+    const sections = document.querySelectorAll('section[id], div[id]');
+    const navAnchors = document.querySelectorAll('.nav-links a[href^="#"]');
+
+    const sectionObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          navAnchors.forEach(a => {
+            a.classList.toggle('active', a.getAttribute('href') === `#${id}`);
+          });
+        }
+      });
+    }, { threshold: 0.4 });
+
+    sections.forEach(s => sectionObserver.observe(s));
+
+
+    // =============================================
+    // АНИМАЦИЯ ЦИФР — счётчик от 0 до конечного значения
+    // Запускается когда блок со статистикой попадает в экран
+    // =============================================
+    function animateCounter(el) {
+      const target  = parseInt(el.getAttribute('data-count'));
+      const suffix  = el.getAttribute('data-suffix') || '';
+      const duration = 1800; // мс — длительность анимации
+      const step    = 16;    // мс — интервал обновления (~60fps)
+      const steps   = duration / step;
+      let current   = 0;
+
+      const timer = setInterval(() => {
+        current += target / steps;
+        if (current >= target) {
+          el.textContent = target + suffix;
+          clearInterval(timer);
+        } else {
+          el.textContent = Math.floor(current) + suffix;
+        }
+      }, step);
+    }
+
+    // Запускаем анимацию когда блок статистики становится виден
+    const statsObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.stat-number[data-count]').forEach(animateCounter);
+          statsObserver.unobserve(entry.target); // запускаем только один раз
+        }
+      });
+    }, { threshold: 0.5 });
+
+    const statsBlock = document.querySelector('.hero-stats');
+    if (statsBlock) statsObserver.observe(statsBlock);
+
+
+    // =============================================
+    // ПАРАЛЛАКС HERO — фото смещается медленнее скролла
+    // Создаёт глубину и объём
+    // =============================================
+    const heroBg = document.querySelector('.hero-bg');
+    function updateParallax() {
+      if (!heroBg) return;
+      const scrollY = window.scrollY;
+      // Смещаем фото вниз на 40% от прокрутки
+      heroBg.style.transform = `translateY(${scrollY * 0.4}px)`;
+    }
+    window.addEventListener('scroll', updateParallax, { passive: true });
+
 
   </script>
 
