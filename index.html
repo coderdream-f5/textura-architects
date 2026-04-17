@@ -429,7 +429,7 @@
     }
 
     /* Большая карточка — занимает 2 строки слева */
-    .portfolio-item { position: relative; overflow: hidden; cursor: pointer; }
+    .portfolio-item { position: relative; overflow: hidden; cursor: pointer; display: block; text-decoration: none; color: inherit; }
     .portfolio-item:first-child { grid-row: span 2; }
 
     /* Фото проекта — ЗАМЕНИ url('...') на свои */
@@ -987,11 +987,12 @@
     <div class="container">
       <div class="footer-inner">
         <span class="footer-logo">Textura Architects</span>
-        <p class="footer-copy">© 2026 Textura Architects</p>
+        <p class="footer-copy">© 2025 Textura Architects</p>
         <div class="footer-socials">
           <!-- ЗАМЕНИ ссылки на свои -->
-          <a href="https://www.instagram.com/textura_architects" target="_blank">Instagram</a>
-          <a href="https://t.me/sandermax93"         target="_blank">Telegram</a>
+          <a href="https://instagram.com" target="_blank">Instagram</a>
+          <a href="https://behance.net"   target="_blank">Behance</a>
+          <a href="https://t.me/"         target="_blank">Telegram</a>
         </div>
       </div>
     </div>
@@ -1264,38 +1265,81 @@
     // =============================================
     const PORTFOLIO = [
 
-      // ── ПРОЕКТ 1 (большой, слева) ─────────────────────────────────
-      // Сейчас стоит placeholder с Unsplash.
-      // Чтобы заменить на своё фото:
-      //   Вариант А (локальный файл): img: 'images/project1.jpg'
-      //     → создай папку images/ рядом с index.html и положи туда фото
-      //   Вариант Б (ссылка):         img: 'https://example.com/photo.jpg'
+      // ══════════════════════════════════════════════════════════════
+      // ПРОЕКТ 1 (большой, слева на главной)
+      //
+      // cover   — обложка на главной странице
+      // gallery — массив фото внутри страницы проекта
+      // desc    — описание на трёх языках
+      // area, year, location — метаданные проекта
+      //
+      // Как заменить placeholder на своё фото:
+      //   1. Создай папку images/ рядом с index.html
+      //   2. Положи фото с именем, указанным ниже
+      //      Например: images/p1-cover.jpg
+      // ══════════════════════════════════════════════════════════════
       {
-        img: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800',
-        title: { ru: 'Апартаменты / 85 м²',  pl: 'Apartament / 85 m²',    en: 'Apartment / 85 m²'     },
-        style: { ru: 'Минимализм',            pl: 'Minimalizm',            en: 'Minimalism'            },
+        cover:   'images/p1-cover.jpg',
+        gallery: ['images/p1-1.jpg', 'images/p1-2.jpg', 'images/p1-3.jpg'],
+        title:    { ru: 'Апартаменты / 85 м²',  pl: 'Apartament / 85 m²',    en: 'Apartment / 85 m²'     },
+        style:    { ru: 'Минимализм',            pl: 'Minimalizm',            en: 'Minimalism'            },
+        area:     '85 м²',
+        year:     '2024',
+        location: { ru: 'Варшава', pl: 'Warszawa', en: 'Warsaw' },
+        desc: {
+          ru: 'Квартира в центре Варшавы. Задача — создать спокойное, светлое пространство без лишних деталей. В основе — нейтральная палитра, натуральные материалы и продуманное освещение.',
+          pl: 'Mieszkanie w centrum Warszawy. Zadanie — stworzyć spokojną, jasną przestrzeń bez zbędnych detali. Neutralna paleta, naturalne materiały i przemyślane oświetlenie.',
+          en: 'An apartment in central Warsaw. The goal was to create a calm, light-filled space with no superfluous detail. Built around a neutral palette, natural materials and carefully considered lighting.',
+        },
       },
 
-      // ── ПРОЕКТ 2 ──────────────────────────────────────────────────
-      // Замени img: на путь к своей фотографии (см. примеры выше)
+      // ══════════════════════════════════════════════════════════════
+      // ПРОЕКТ 2 — заполни по образцу выше
+      // ══════════════════════════════════════════════════════════════
       {
-        img: 'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800',
-        title: { ru: 'Частный дом / 160 м²', pl: 'Dom prywatny / 160 m²', en: 'Private house / 160 m²'},
-        style: { ru: 'Современная классика', pl: 'Nowoczesna klasyka',     en: 'Contemporary classic'  },
+        cover:   'images/p2-cover.jpg',
+        gallery: ['images/p2-1.jpg', 'images/p2-2.jpg', 'images/p2-3.jpg'],
+        title:    { ru: 'Частный дом / 160 м²', pl: 'Dom prywatny / 160 m²', en: 'Private house / 160 m²' },
+        style:    { ru: 'Современная классика', pl: 'Nowoczesna klasyka',     en: 'Contemporary classic'   },
+        area:     '160 м²',
+        year:     '2023',
+        location: { ru: 'Краков', pl: 'Kraków', en: 'Kraków' },
+        desc: {
+          ru: 'Загородный дом под Краковом. Сочетание классических пропорций с современными материалами — мрамор, тёмное дерево, латунь. Акцент на деталях: карнизы, встроенная мебель, авторские светильники.',
+          pl: 'Dom pod Krakowem. Klasyczne proporcje i nowoczesne materiały — marmur, ciemne drewno, mosiądz. Nacisk na detale: gzymsy, meble na wymiar, autorskie lampy.',
+          en: 'A house near Kraków. Classical proportions meet contemporary materials — marble, dark wood, brass. The emphasis is on details: cornicing, bespoke joinery and custom lighting.',
+        },
       },
 
-      // ── ПРОЕКТ 3 ──────────────────────────────────────────────────
+      // ══════════════════════════════════════════════════════════════
+      // ПРОЕКТ 3
+      // ══════════════════════════════════════════════════════════════
       {
-        img: 'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=800',
-        title: { ru: 'Студия / 42 м²',       pl: 'Studio / 42 m²',        en: 'Studio flat / 42 m²'  },
-        style: { ru: 'Лофт',                 pl: 'Loft',                  en: 'Loft'                  },
+        cover:   'images/p3-cover.jpg',
+        gallery: ['images/p3-1.jpg', 'images/p3-2.jpg', 'images/p3-3.jpg'],
+        title:    { ru: 'Студия / 42 м²',  pl: 'Studio / 42 m²',  en: 'Studio flat / 42 m²' },
+        style:    { ru: 'Лофт',            pl: 'Loft',             en: 'Loft'                 },
+        area:     '42 м²',
+        year:     '2024',
+        location: { ru: 'Варшава', pl: 'Warszawa', en: 'Warsaw' },
+        desc: {
+          ru: 'Компактная студия для молодого архитектора. Открытое пространство, высокие потолки, обнажённый бетон и металл. Зонирование — за счёт мебели и освещения, без перегородок.',
+          pl: 'Studio dla młodego architekta. Otwarta przestrzeń, wysokie sufity, beton i metal. Podział stref meblem i oświetleniem, bez ścian działowych.',
+          en: 'A compact studio for a young architect. Open plan, high ceilings, exposed concrete and metal. Zones defined by furniture and lighting — no partition walls.',
+        },
       },
 
-      // ── ДОБАВЬ СВОЙ ПРОЕКТ СЮДА ───────────────────────────────────
+      // ══════════════════════════════════════════════════════════════
+      // ДОБАВЬ НОВЫЙ ПРОЕКТ СЮДА — скопируй блок выше и заполни
+      // ══════════════════════════════════════════════════════════════
       // {
-      //   img: 'images/project4.jpg',
-      //   title: { ru: 'Название', pl: 'Nazwa', en: 'Title' },
-      //   style: { ru: 'Стиль',   pl: 'Styl',  en: 'Style' },
+      //   cover:   'images/p4-cover.jpg',
+      //   gallery: ['images/p4-1.jpg', 'images/p4-2.jpg'],
+      //   title:    { ru: '...', pl: '...', en: '...' },
+      //   style:    { ru: '...', pl: '...', en: '...' },
+      //   area:     '... м²', year: '2025',
+      //   location: { ru: '...', pl: '...', en: '...' },
+      //   desc:     { ru: '...', pl: '...', en: '...' },
       // },
     ];
 
@@ -1324,11 +1368,10 @@
       if (!grid) return;
       grid.innerHTML = PORTFOLIO.map((p, i) => {
         const big = i === 0 ? 'style="grid-row:span 2"' : '';
-        // Если файл картинки не найден — показываем серый блок-заглушку
         return `
-          <div class="portfolio-item fade-in" ${big}>
+          <a class="portfolio-item fade-in" href="project.html?id=${i}" ${big}>
             <img class="portfolio-img"
-              src="${p.img}"
+              src="${p.cover}"
               alt="${p.title.ru}"
               onerror="this.style.cssText='background:#1e1e1e;display:block;width:100%;height:100%';this.removeAttribute('src')"
             />
@@ -1336,7 +1379,7 @@
               <span>${p.style[currentLang] || p.style.ru}</span>
               <h3>${p.title[currentLang] || p.title.ru}</h3>
             </div>
-          </div>`;
+          </a>`;
       }).join('');
       grid.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
     }
@@ -1431,8 +1474,8 @@
     //      Найди "id" внутри "chat" — это CHAT_ID
     //   4. Вставь значения в BOT_TOKEN и CHAT_ID ниже
     // =============================================
-    const BOT_TOKEN = '8204722018:AAHetftLFwyHkYTMCCyKf-IyduN3KEb3gHs';   // ← заменить
-    const CHAT_ID   = '444282433'; // ← заменить
+    const BOT_TOKEN = 'ВСТАВЬ_ТОКЕН_СЮДА';   // ← заменить
+    const CHAT_ID   = 'ВСТАВЬ_CHAT_ID_СЮДА'; // ← заменить
 
     async function sendToTelegram(text) {
       if (BOT_TOKEN.includes('ВСТАВЬ')) {
