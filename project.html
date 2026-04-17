@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Проект — Textura Architects</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =============================================
+       ЦВЕТА — те же что в index.html
+       Если менял там — меняй и здесь
+    ============================================= */
+    :root {
+      --bg: #0e0e0e;
+      --bg-card: #161616;
+      --bg-card-hover: #1e1e1e;
+      --text: #f0ebe3;
+      --text-muted: #7a756e;
+      --accent: #c9a96e;
+      --border: #2a2a2a;
+      --font-heading: 'Cormorant Garamond', serif;
+      --font-body: 'Jost', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+
+    /* =============================================
+       НАВИГАЦИЯ — копия из index.html
+    ============================================= */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(14,14,14,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-links { display: flex; align-items: center; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .lang-switcher { display: flex; gap: 0.5rem; }
+    .lang-btn {
+      background: transparent; border: none;
+      color: var(--text-muted);
+      font-family: var(--font-body);
+      font-size: 11px; letter-spacing: 0.15em;
+      text-transform: uppercase; cursor: pointer; padding: 4px 6px;
+      transition: color 0.2s;
+    }
+    .lang-btn:hover, .lang-btn.active { color: var(--accent); }
+
+    .nav-burger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; background: none; border: none; padding: 4px;
+    }
+    .nav-burger span { display: block; width: 22px; height: 1px; background: var(--text); }
+
+    /* =============================================
+       ХЛЕБНЫЕ КРОШКИ — ссылка "← Все проекты"
+    ============================================= */
+    .breadcrumb {
+      padding: 120px 0 0;
+    }
+    .breadcrumb a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .breadcrumb a:hover { color: var(--accent); }
+    .breadcrumb a::before { content: '←'; font-size: 14px; }
+
+    /* =============================================
+       ЗАГОЛОВОК ПРОЕКТА
+    ============================================= */
+    .project-header {
+      padding: 3rem 0 4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Строка с тегом стиля и годом */
+    .project-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .project-tag {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .project-year {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+    }
+
+    .project-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2.5rem, 5vw, 5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 2.5rem;
+    }
+
+    /* Метаданные: площадь / год / город */
+    .project-meta {
+      display: flex;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+    .meta-item { display: flex; flex-direction: column; gap: 0.3rem; }
+    .meta-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .meta-value { font-size: 15px; }
+
+    /* =============================================
+       ГЛАВНОЕ ФОТО ПРОЕКТА (обложка)
+       ЗАМЕНИ src в JS ниже — поле cover в PORTFOLIO
+    ============================================= */
+    .project-cover {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      display: block;
+      margin: 3rem 0;
+      background: var(--bg-card);
+    }
+
+    /* =============================================
+       ОПИСАНИЕ ПРОЕКТА
+       ЗАМЕНИ текст в PORTFOLIO → desc
+    ============================================= */
+    .project-body {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 5rem;
+      padding: 4rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .project-body-label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding-top: 6px;
+    }
+    .project-desc {
+      font-size: 16px;
+      color: var(--text-muted);
+      line-height: 1.9;
+    }
+
+    /* =============================================
+       ГАЛЕРЕЯ ФОТОГРАФИЙ
+       Фото берутся из массива gallery в PORTFOLIO
+       Чтобы добавить фото: добавь путь в gallery
+    ============================================= */
+    .gallery-section { padding: 4rem 0; }
+    .gallery-label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    /* Сетка галереи */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    /* Первое фото занимает всю ширину */
+    .gallery-grid .gallery-img:first-child {
+      grid-column: span 2;
+      aspect-ratio: 16/9;
+    }
+    .gallery-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+      background: var(--bg-card);
+      transition: opacity 0.3s;
+    }
+    .gallery-img:hover { opacity: 0.85; }
+
+    /* =============================================
+       НАВИГАЦИЯ МЕЖДУ ПРОЕКТАМИ (пред / след)
+    ============================================= */
+    .project-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3rem 0;
+      border-top: 1px solid var(--border);
+      gap: 2rem;
+    }
+    .project-nav-link {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      text-decoration: none;
+      max-width: 45%;
+    }
+    .project-nav-link:last-child { align-items: flex-end; text-align: right; }
+    .project-nav-dir {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .project-nav-title {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      font-weight: 300;
+      color: var(--text);
+      transition: color 0.2s;
+    }
+    .project-nav-link:hover .project-nav-title { color: var(--accent); }
+    .project-nav-empty { flex: 1; } /* заглушка если нет пред/след */
+
+    /* Кнопка */
+    .btn {
+      display: inline-block;
+      padding: 14px 36px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      background: transparent;
+      transition: background 0.3s, color 0.3s;
+    }
+    .btn:hover { background: var(--accent); color: var(--bg); }
+
+    /* Футер */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 0;
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-logo { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 400; }
+    .footer-copy { font-size: 12px; color: var(--text-muted); }
+    .footer-socials { display: flex; gap: 1.5rem; }
+    .footer-socials a {
+      font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--text-muted); text-decoration: none; transition: color 0.2s;
+    }
+    .footer-socials a:hover { color: var(--accent); }
+
+    /* Анимация */
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* Мобильный адаптив */
+    @media (max-width: 900px) {
+      .project-body { grid-template-columns: 1fr; gap: 1.5rem; }
+      .project-meta { gap: 2rem; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-grid .gallery-img:first-child { grid-column: span 1; }
+      .nav-links { display: none; flex-direction: column; gap: 1.5rem; position: absolute;
+        top: 100%; left: 0; right: 0; background: var(--bg); padding: 2rem;
+        border-bottom: 1px solid var(--border); }
+      .nav-links.open { display: flex; }
+      .nav-burger { display: flex; }
+      .footer-inner { flex-direction: column; gap: 1.5rem; text-align: center; }
+      .project-nav { flex-direction: column; align-items: flex-start; }
+      .project-nav-link:last-child { align-items: flex-start; text-align: left; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =============================================
+       НАВИГАЦИЯ
+  ============================================= -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">Textura Architects</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html#about"     data-i18n="nav_about"></a></li>
+      <li><a href="index.html#services"  data-i18n="nav_services"></a></li>
+      <li><a href="index.html#portfolio" data-i18n="nav_portfolio"></a></li>
+      <li><a href="index.html#process"   data-i18n="nav_process"></a></li>
+      <li><a href="index.html#contact"   data-i18n="nav_contact"></a></li>
+    </ul>
+    <div style="display:flex; align-items:center; gap:1.5rem;">
+      <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('ru')">RU</button>
+        <button class="lang-btn" onclick="setLang('pl')">PL</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+      </div>
+      <button class="nav-burger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+
+  <!-- =============================================
+       СОДЕРЖИМОЕ ПРОЕКТА
+       Всё заполняется автоматически из PORTFOLIO через JS
+  ============================================= -->
+  <main>
+    <div class="container">
+
+      <!-- Хлебные крошки -->
+      <div class="breadcrumb">
+        <a href="index.html#portfolio" data-i18n="back_label"></a>
+      </div>
+
+      <!-- Заголовок -->
+      <div class="project-header fade-in">
+        <div class="project-eyebrow">
+          <span class="project-tag"  id="proj-style"></span>
+          <span class="project-year" id="proj-year"></span>
+        </div>
+        <h1 class="project-title" id="proj-title"></h1>
+        <div class="project-meta">
+          <div class="meta-item">
+            <span class="meta-label" data-i18n="meta_area"></span>
+            <span class="meta-value" id="proj-area"></span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label" data-i18n="meta_year"></span>
+            <span class="meta-value" id="proj-year2"></span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label" data-i18n="meta_location"></span>
+            <span class="meta-value" id="proj-location"></span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label" data-i18n="meta_style"></span>
+            <span class="meta-value" id="proj-style2"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Главное фото -->
+      <img class="project-cover fade-in" id="proj-cover" src="" alt="" />
+
+      <!-- Описание -->
+      <div class="project-body fade-in">
+        <span class="project-body-label" data-i18n="about_project"></span>
+        <p class="project-desc" id="proj-desc"></p>
+      </div>
+
+      <!-- Галерея -->
+      <div class="gallery-section fade-in">
+        <p class="gallery-label" data-i18n="gallery_label"></p>
+        <div class="gallery-grid" id="proj-gallery"></div>
+      </div>
+
+      <!-- CTA -->
+      <div style="text-align:center; padding: 3rem 0 4rem; border-top: 1px solid var(--border);">
+        <p style="font-family: var(--font-heading); font-size: 2rem; font-weight:300; margin-bottom:1.5rem;" data-i18n="cta_title"></p>
+        <a href="index.html#contact" class="btn" data-i18n="cta_btn"></a>
+      </div>
+
+      <!-- Навигация между проектами -->
+      <div class="project-nav" id="proj-nav"></div>
+
+    </div>
+  </main>
+
+
+  <!-- ФУТЕР -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-logo">Textura Architects</span>
+        <p class="footer-copy">© 2025 Textura Architects</p>
+        <div class="footer-socials">
+          <a href="https://instagram.com" target="_blank">Instagram</a>
+          <a href="https://behance.net"   target="_blank">Behance</a>
+          <a href="https://t.me/"         target="_blank">Telegram</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+
+    // =============================================
+    // ПЕРЕВОДЫ ДЛЯ ЭТОЙ СТРАНИЦЫ
+    // =============================================
+    const translations = {
+      ru: {
+        nav_about:      'О нас',
+        nav_services:   'Услуги',
+        nav_portfolio:  'Проекты',
+        nav_process:    'Процесс',
+        nav_contact:    'Контакты',
+        back_label:     'Все проекты',
+        meta_area:      'Площадь',
+        meta_year:      'Год',
+        meta_location:  'Город',
+        meta_style:     'Стиль',
+        about_project:  'О проекте',
+        gallery_label:  'Фотографии',
+        cta_title:      'Хотите похожий проект?',
+        cta_btn:        'Оставить заявку',
+        prev_project:   '← Предыдущий',
+        next_project:   'Следующий →',
+      },
+      pl: {
+        nav_about:      'O nas',
+        nav_services:   'Usługi',
+        nav_portfolio:  'Projekty',
+        nav_process:    'Proces',
+        nav_contact:    'Kontakt',
+        back_label:     'Wszystkie projekty',
+        meta_area:      'Powierzchnia',
+        meta_year:      'Rok',
+        meta_location:  'Miasto',
+        meta_style:     'Styl',
+        about_project:  'O projekcie',
+        gallery_label:  'Zdjęcia',
+        cta_title:      'Chcesz podobny projekt?',
+        cta_btn:        'Zapytaj o wycenę',
+        prev_project:   '← Poprzedni',
+        next_project:   'Następny →',
+      },
+      en: {
+        nav_about:      'About',
+        nav_services:   'Services',
+        nav_portfolio:  'Projects',
+        nav_process:    'Process',
+        nav_contact:    'Contact',
+        back_label:     'All projects',
+        meta_area:      'Area',
+        meta_year:      'Year',
+        meta_location:  'City',
+        meta_style:     'Style',
+        about_project:  'About the project',
+        gallery_label:  'Photography',
+        cta_title:      'Interested in a similar project?',
+        cta_btn:        'Get in touch',
+        prev_project:   '← Previous',
+        next_project:   'Next →',
+      },
+    };
+
+    // =============================================
+    // ДАННЫЕ ПРОЕКТОВ
+    // Это тот же массив что в index.html — PORTFOLIO.
+    // Если добавляешь проект — добавляй в ОБА файла.
+    // =============================================
+    const PORTFOLIO = [
+
+      // ── ПРОЕКТ 1 ──────────────────────────────
+      {
+        cover:   'images/p1-cover.jpg',
+        gallery: ['images/p1-1.jpg', 'images/p1-2.jpg', 'images/p1-3.jpg'],
+        title:    { ru: 'Апартаменты / 85 м²',  pl: 'Apartament / 85 m²',    en: 'Apartment / 85 m²'     },
+        style:    { ru: 'Минимализм',            pl: 'Minimalizm',            en: 'Minimalism'            },
+        area:     '85 м²',
+        year:     '2024',
+        location: { ru: 'Варшава', pl: 'Warszawa', en: 'Warsaw' },
+        desc: {
+          ru: 'Квартира в центре Варшавы. Задача — создать спокойное, светлое пространство без лишних деталей. В основе — нейтральная палитра, натуральные материалы и продуманное освещение.',
+          pl: 'Mieszkanie w centrum Warszawy. Zadanie — stworzyć spokojną, jasną przestrzeń bez zbędnych detali. Neutralna paleta, naturalne materiały i przemyślane oświetlenie.',
+          en: 'An apartment in central Warsaw. The goal was to create a calm, light-filled space with no superfluous detail. Built around a neutral palette, natural materials and carefully considered lighting.',
+        },
+      },
+
+      // ── ПРОЕКТ 2 ──────────────────────────────
+      {
+        cover:   'images/p2-cover.jpg',
+        gallery: ['images/p2-1.jpg', 'images/p2-2.jpg', 'images/p2-3.jpg'],
+        title:    { ru: 'Частный дом / 160 м²', pl: 'Dom prywatny / 160 m²', en: 'Private house / 160 m²' },
+        style:    { ru: 'Современная классика', pl: 'Nowoczesna klasyka',     en: 'Contemporary classic'   },
+        area:     '160 м²',
+        year:     '2023',
+        location: { ru: 'Краков', pl: 'Kraków', en: 'Kraków' },
+        desc: {
+          ru: 'Загородный дом под Краковом. Сочетание классических пропорций с современными материалами — мрамор, тёмное дерево, латунь. Акцент на деталях: карнизы, встроенная мебель, авторские светильники.',
+          pl: 'Dom pod Krakowem. Klasyczne proporcje i nowoczesne materiały — marmur, ciemne drewno, mosiądz. Nacisk na detale: gzymsy, meble na wymiar, autorskie lampy.',
+          en: 'A house near Kraków. Classical proportions meet contemporary materials — marble, dark wood, brass. The emphasis is on details: cornicing, bespoke joinery and custom lighting.',
+        },
+      },
+
+      // ── ПРОЕКТ 3 ──────────────────────────────
+      {
+        cover:   'images/p3-cover.jpg',
+        gallery: ['images/p3-1.jpg', 'images/p3-2.jpg', 'images/p3-3.jpg'],
+        title:    { ru: 'Студия / 42 м²',  pl: 'Studio / 42 m²',  en: 'Studio flat / 42 m²' },
+        style:    { ru: 'Лофт',            pl: 'Loft',             en: 'Loft'                 },
+        area:     '42 м²',
+        year:     '2024',
+        location: { ru: 'Варшава', pl: 'Warszawa', en: 'Warsaw' },
+        desc: {
+          ru: 'Компактная студия для молодого архитектора. Открытое пространство, высокие потолки, обнажённый бетон и металл. Зонирование — за счёт мебели и освещения, без перегородок.',
+          pl: 'Studio dla młodego architekta. Otwarta przestrzeń, wysokie sufity, beton i metal. Podział stref meblem i oświetleniem, bez ścian działowych.',
+          en: 'A compact studio for a young architect. Open plan, high ceilings, exposed concrete and metal. Zones defined by furniture and lighting — no partition walls.',
+        },
+      },
+
+      // ── ДОБАВЬ ПРОЕКТ СЮДА — и такой же в index.html ──
+      // {
+      //   cover:   'images/p4-cover.jpg',
+      //   gallery: ['images/p4-1.jpg', 'images/p4-2.jpg'],
+      //   title:    { ru: '...', pl: '...', en: '...' },
+      //   style:    { ru: '...', pl: '...', en: '...' },
+      //   area: '...', year: '2025',
+      //   location: { ru: '...', pl: '...', en: '...' },
+      //   desc:     { ru: '...', pl: '...', en: '...' },
+      // },
+    ];
+
+
+    // =============================================
+    // ЛОГИКА СТРАНИЦЫ
+    // =============================================
+    let currentLang = 'ru';
+
+    // Читаем ?id=X из URL — это индекс проекта в массиве
+    const urlId  = parseInt(new URLSearchParams(window.location.search).get('id')) || 0;
+    const project = PORTFOLIO[urlId];
+
+    // Если проект не найден — возвращаем на главную
+    if (!project) {
+      window.location.href = 'index.html#portfolio';
+    }
+
+    // Заполняем страницу данными проекта
+    function renderProject() {
+      if (!project) return;
+      const lang = currentLang;
+
+      // Заголовок вкладки браузера
+      document.title = `${project.title[lang] || project.title.ru} — Textura Architects`;
+
+      // Контент
+      document.getElementById('proj-title').textContent    = project.title[lang]    || project.title.ru;
+      document.getElementById('proj-style').textContent    = project.style[lang]    || project.style.ru;
+      document.getElementById('proj-style2').textContent   = project.style[lang]    || project.style.ru;
+      document.getElementById('proj-year').textContent     = project.year;
+      document.getElementById('proj-year2').textContent    = project.year;
+      document.getElementById('proj-area').textContent     = project.area;
+      document.getElementById('proj-location').textContent = project.location[lang] || project.location.ru;
+      document.getElementById('proj-desc').textContent     = project.desc[lang]     || project.desc.ru;
+
+      // Обложка
+      const cover = document.getElementById('proj-cover');
+      cover.src = project.cover;
+      cover.alt = project.title[lang] || project.title.ru;
+
+      // Галерея
+      const galleryEl = document.getElementById('proj-gallery');
+      galleryEl.innerHTML = project.gallery.map(src => `
+        <img class="gallery-img"
+          src="${src}"
+          alt=""
+          onerror="this.style.background='#1e1e1e'; this.removeAttribute('src')"
+        />
+      `).join('');
+
+      // Навигация пред / след
+      const nav = document.getElementById('proj-nav');
+      const prev = PORTFOLIO[urlId - 1];
+      const next = PORTFOLIO[urlId + 1];
+      const t = translations[lang];
+      nav.innerHTML = `
+        ${prev
+          ? `<a class="project-nav-link" href="project.html?id=${urlId - 1}">
+               <span class="project-nav-dir">${t.prev_project}</span>
+               <span class="project-nav-title">${prev.title[lang] || prev.title.ru}</span>
+             </a>`
+          : '<div class="project-nav-empty"></div>'
+        }
+        ${next
+          ? `<a class="project-nav-link" href="project.html?id=${urlId + 1}">
+               <span class="project-nav-dir">${t.next_project}</span>
+               <span class="project-nav-title">${next.title[lang] || next.title.ru}</span>
+             </a>`
+          : '<div class="project-nav-empty"></div>'
+        }
+      `;
+    }
+
+    // Применяем переводы статичных элементов и перерисовываем проект
+    function setLang(lang) {
+      currentLang = lang;
+      const t = translations[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) el.textContent = t[key];
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
+      });
+      document.documentElement.lang = lang;
+      renderProject(); // перерисовываем с новым языком
+    }
+
+    function toggleMenu() {
+      document.getElementById('nav-links').classList.toggle('open');
+    }
+
+    // Анимация при скролле
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Запуск
+    setLang('ru');
+
+  </script>
+
+</body>
+</html>
